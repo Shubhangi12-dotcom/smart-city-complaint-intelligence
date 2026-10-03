@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Smart City Complaint Intelligence
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body class="citizen-page">
+
+
+<!-- =========================================
+     HERO
+========================================= -->
+
+<section class="citizen-hero">
+
+    <div class="citizen-hero-content">
+
+        <div class="portal-badge">
+            🏙️ SMART CITY • CITIZEN PORTAL
+        </div>
+
+        <h1>
+            Smart City Complaint Intelligence
+        </h1>
+
+        <p>
+            Report a civic issue and let our intelligent
+            system analyze, prioritize and route your complaint.
+        </p>
+
+
+        <div class="hero-features">
+
+            <span>
+                🤖 AI Assisted
+            </span>
+
+            <span>
+                ⚡ Priority Detection
+            </span>
+
+            <span>
+                📍 Complaint Tracking
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="citizen-hero-icon">
+        🏙️
+    </div>
+
+</section>
+
+
+
+<div class="citizen-container">
+
+
+<!-- =========================================
+     COMPLAINT FORM
+========================================= -->
+
+<div class="citizen-card">
+
+
+    <div class="section-heading">
+
+        <div class="heading-icon">
+            📝
+        </div>
+
+        <div>
+
+            <div class="section-tag">
+                REPORT AN ISSUE
+            </div>
+
+            <h2>
+                Submit a Complaint
+            </h2>
+
+            <p>
+                Provide a few details so we can process your
+                complaint efficiently.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form
+        action="/predict"
+        method="POST"
+        class="complaint-form"
+    >
+
+
+        <!-- Name -->
+
+        <div class="form-field">
+
+            <label>
+                Your Name
+            </label>
+
+            <input
+                type="text"
+                name="citizen_name"
+                placeholder="Enter your name"
+                value="{{ citizen_name if citizen_name else '' }}"
+                required
+            >
+
+        </div>
+
+
+        <!-- Contact -->
+
+        <div class="form-field">
+
+            <label>
+                Email / Phone
+            </label>
+
+            <input
+                type="text"
+                name="contact"
+                placeholder="Enter email or phone number"
+                value="{{ contact if contact else '' }}"
+            >
+
+        </div>
+
+
+        <!-- Location -->
+
+        <div class="form-field full-width">
+
+            <label>
+                📍 Complaint Location
+            </label>
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Example: Rajpur Road, Dehradun"
+                value="{{ location if location else '' }}"
+                required
+            >
+
+            <small>
+                Mention the area, road, landmark or locality.
+            </small>
+
+        </div>
+
+
+        <!-- Complaint -->
+
+        <div class="form-field full-width">
+
+            <label>
+                📝 Describe Your Complaint
+            </label>
+
+            <textarea
+                name="complaint"
+                placeholder="Example: There is a large pothole near the school..."
+                required
+            >{{ complaint if complaint else '' }}</textarea>
+
+            <small>
+                Give as much useful detail as possible.
+            </small>
+
+        </div>
+
+
+        <!-- Button -->
+
+        <div class="form-submit full-width">
+
+            <button
+                type="submit"
+                class="analyze-button"
+            >
+                🔍 Analyze Complaint
+            </button>
+
+        </div>
+
+
+    </form>
+
+
+    {% if error %}
+
+        <div class="error citizen-error">
+
+            ⚠️ {{ error }}
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+
+<!-- =========================================
+     HOW IT WORKS
+========================================= -->
+
+<div class="process-card">
+
+    <div class="section-tag">
+        HOW IT WORKS
+    </div>
+
+    <h2>
+        From Complaint to Action
+    </h2>
+
+
+    <div class="process-grid">
+
+
+        <div class="process-item">
+
+            <div class="process-number">
+                1
+            </div>
+
+            <div>
+
+                <h3>
+                    Submit
+                </h3>
+
+                <p>
+                    Describe the civic issue and location.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="process-line"></div>
+
+
+        <div class="process-item">
+
+            <div class="process-number">
+                2
+            </div>
+
+            <div>
+
+                <h3>
+                    AI Analysis
+                </h3>
+
+                <p>
+                    The system classifies and prioritizes your complaint.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="process-line"></div>
+
+
+        <div class="process-item">
+
+            <div class="process-number">
+                3
+            </div>
+
+            <div>
+
+                <h3>
+                    Track
+                </h3>
+
+                <p>
+                    Receive a complaint ID for future tracking.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     ANALYSIS RESULT
+========================================= -->
+
+{% if prediction %}
+
+
+<div class="result-card">
+
+
+    <div class="result-header">
+
+        <div>
+
+            <div class="section-tag">
+                ✅ ANALYSIS COMPLETE
+            </div>
+
+            <h2>
+                Complaint Analysis
+            </h2>
+
+            <p>
+                Your complaint has been analyzed successfully.
+            </p>
+
+        </div>
+
+
+        <div class="result-check">
+            ✓
+        </div>
+
+    </div>
+
+
+    <!-- Complaint ID -->
+
+    <div class="tracking-box">
+
+        <span>
+            Complaint ID
+        </span>
+
+        <strong>
+            CMP{{ complaint_id }}
+        </strong>
+
+        <small>
+            Keep this ID for future status updates.
+        </small>
+
+    </div>
+
+
+    <!-- Result Grid -->
+
+    <div class="result-grid">
+
+
+        <div class="result-item">
+
+            <span class="result-label">
+                Predicted Category
+            </span>
+
+            <strong class="result-value">
+                {{ prediction }}
+            </strong>
+
+        </div>
+
+
+        <div class="result-item">
+
+            <span class="result-label">
+                Priority
+            </span>
+
+
+            {% if priority == "High" %}
+
+                <span class="result-badge result-high">
+                    🔴 High
+                </span>
+
+            {% elif priority == "Medium" %}
+
+                <span class="result-badge result-medium">
+                    🟠 Medium
+                </span>
+
+            {% else %}
+
+                <span class="result-badge result-low">
+                    🟢 Low
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="result-item">
+
+            <span class="result-label">
+                Assigned Department
+            </span>
+
+            <strong class="result-value">
+                {{ department }}
+            </strong>
+
+        </div>
+
+
+        <div class="result-item">
+
+            <span class="result-label">
+                Estimated Response
+            </span>
+
+            <strong class="result-value">
+                {{ response_time }}
+            </strong>
+
+        </div>
+
+
+        <div class="result-item">
+
+            <span class="result-label">
+                Current Status
+            </span>
+
+            <span class="result-badge result-pending">
+                🟡 Pending
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- Duplicate -->
+
+    {% if duplicate %}
+
+    <div class="duplicate-warning">
+
+        <div class="duplicate-title">
+            ⚠️ Possible Duplicate Complaint
+        </div>
+
+        <p>
+            This complaint appears similar to
+            <strong>
+                CMP{{ duplicate["id"] }}
+            </strong>.
+        </p>
+
+        <div class="duplicate-details">
+
+            <span>
+                Similarity:
+                <strong>
+                    {{ duplicate["similarity"] }}%
+                </strong>
+            </span>
+
+            <span>
+                Existing Status:
+                <strong>
+                    {{ duplicate["status"] }}
+                </strong>
+            </span>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+{% endif %}
+
+
+
+<!-- =========================================
+     DASHBOARD LINK
+========================================= -->
+
+<div class="citizen-bottom">
+
+    <a
+        href="/dashboard"
+        class="dashboard-link"
+    >
+        📊 Open Admin Dashboard
+    </a>
+
+</div>
+
+
+</div>
+
+
+</body>
+
+</html>

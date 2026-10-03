@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Smart City Complaint Intelligence</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="dashboard-page">
+
+
+    <!-- =========================================
+         Hero Header
+    ========================================== -->
+
+    <div class="hero">
+
+        <div>
+
+            <div class="hero-badge">
+                🏙️ SMART CITY • ADMIN CONSOLE
+            </div>
+
+            <h1>
+                Complaint Intelligence Dashboard
+            </h1>
+
+            <p>
+                Monitor civic complaints, identify priorities,
+                track resolutions and generate AI-powered insights.
+            </p>
+
+        </div>
+
+
+        <div class="hero-icon">
+            🤖
+        </div>
+
+    </div>
+
+
+    <div class="container">
+
+
+        <!-- =====================================
+             Statistics
+        ====================================== -->
+
+        <div class="dashboard-grid">
+
+
+            <div class="stat-card stat-blue">
+
+                <div class="stat-icon">
+                    📋
+                </div>
+
+                <div>
+
+                    <div class="stat-label">
+                        Total Complaints
+                    </div>
+
+                    <div class="stat-number">
+                        {{ stats.total }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card stat-yellow">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <div class="stat-label">
+                        Pending
+                    </div>
+
+                    <div class="stat-number">
+                        {{ stats.pending }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card stat-purple">
+
+                <div class="stat-icon">
+                    🔄
+                </div>
+
+                <div>
+
+                    <div class="stat-label">
+                        In Progress
+                    </div>
+
+                    <div class="stat-number">
+                        {{ stats.in_progress }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card stat-green">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <div>
+
+                    <div class="stat-label">
+                        Resolved
+                    </div>
+
+                    <div class="stat-number">
+                        {{ stats.resolved }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card stat-red">
+
+                <div class="stat-icon">
+                    🚨
+                </div>
+
+                <div>
+
+                    <div class="stat-label">
+                        High Priority
+                    </div>
+
+                    <div class="stat-number">
+                        {{ stats.high_priority }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================
+             Top Insights
+        ====================================== -->
+
+        <div class="insights-grid">
+
+
+            <div class="insight-card">
+
+                <div class="insight-icon purple-icon">
+                    📌
+                </div>
+
+                <div>
+
+                    <div class="insight-label">
+                        Most Reported Category
+                    </div>
+
+                    <div class="insight-value">
+                        {{ insights.top_category }}
+                    </div>
+
+                    <div class="insight-small">
+                        {{ insights.top_category_count }}
+                        complaint(s)
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="insight-card">
+
+                <div class="insight-icon blue-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <div class="insight-label">
+                        Most Reported Location
+                    </div>
+
+                    <div class="insight-value">
+                        {{ insights.top_location }}
+                    </div>
+
+                    <div class="insight-small">
+                        {{ insights.top_location_count }}
+                        complaint(s)
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================
+             AI Insights
+        ====================================== -->
+
+        <div class="card ai-card">
+
+            <div class="ai-header">
+
+                <div>
+
+                    <div class="section-tag">
+                        ✨ AI ANALYTICS
+                    </div>
+
+                    <h2>
+                        🤖 AI City Insights
+                    </h2>
+
+                    <p>
+                        Analyze current complaint trends and
+                        administrative priorities.
+                    </p>
+
+                </div>
+
+
+                <form
+                    action="/generate-insights"
+                    method="POST"
+                >
+
+                    <button
+                        type="submit"
+                        class="ai-button"
+                    >
+                        ✨ Generate AI Insights
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            {% if ai_report %}
+
+                <div class="ai-report">
+
+                    {{ ai_report | safe }}
+
+                </div>
+
+            {% else %}
+
+                <div class="ai-empty">
+
+                    <div class="ai-empty-icon">
+                        🤖
+                    </div>
+
+                    <p>
+                        Click the button above to generate
+                        an AI-powered administrative report.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =====================================
+             Search & Filters
+        ====================================== -->
+
+        <div class="card filter-card">
+
+            <div class="section-tag">
+                🔎 COMPLAINT MANAGEMENT
+            </div>
+
+            <h2>
+                Search & Filter Complaints
+            </h2>
+
+            <br>
+
+
+            <form
+                method="GET"
+                action="/dashboard"
+                class="filter-form"
+            >
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search complaint, location..."
+                    >
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select name="category">
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        {% for category in categories %}
+
+                            <option
+                                value="{{ category }}"
+                                {% if selected_category == category %}
+                                selected
+                                {% endif %}
+                            >
+                                {{ category }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Priority
+                    </label>
+
+                    <select name="priority">
+
+                        <option value="">
+                            All Priorities
+                        </option>
+
+                        <option
+                            value="High"
+                            {% if selected_priority == "High" %}
+                            selected
+                            {% endif %}
+                        >
+                            High
+                        </option>
+
+                        <option
+                            value="Medium"
+                            {% if selected_priority == "Medium" %}
+                            selected
+                            {% endif %}
+                        >
+                            Medium
+                        </option>
+
+                        <option
+                            value="Low"
+                            {% if selected_priority == "Low" %}
+                            selected
+                            {% endif %}
+                        >
+                            Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select name="status">
+
+                        <option value="">
+                            All Status
+                        </option>
+
+                        <option
+                            value="Pending"
+                            {% if selected_status == "Pending" %}
+                            selected
+                            {% endif %}
+                        >
+                            Pending
+                        </option>
+
+                        <option
+                            value="In Progress"
+                            {% if selected_status == "In Progress" %}
+                            selected
+                            {% endif %}
+                        >
+                            In Progress
+                        </option>
+
+                        <option
+                            value="Resolved"
+                            {% if selected_status == "Resolved" %}
+                            selected
+                            {% endif %}
+                        >
+                            Resolved
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-buttons">
+
+                    <button
+                        type="submit"
+                    >
+                        Apply
+                    </button>
+
+
+                    <a
+                        href="/dashboard"
+                        class="clear-button"
+                    >
+                        Clear
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- =====================================
+             Complaints Table
+        ====================================== -->
+
+        <div class="card table-card">
+
+
+            <div class="table-header">
+
+                <div>
+
+                    <div class="section-tag">
+                        📋 LIVE RECORDS
+                    </div>
+
+                    <h2>
+                        Citizen Complaints
+                    </h2>
+
+                </div>
+
+
+                <span class="result-count">
+
+                    {{ complaints|length }}
+                    total
+
+                </span>
+
+            </div>
+
+
+            <br>
+
+
+            {% if complaints %}
+
+
+            <div class="table-container">
+
+                <table id="complaintsTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Citizen</th>
+
+                            <th>Location</th>
+
+                            <th>Complaint</th>
+
+                            <th>Category</th>
+
+                            <th>Priority</th>
+
+                            <th>Status</th>
+
+                            <th>Department</th>
+
+                            <th>Date</th>
+
+                            <th>Update</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    {% for complaint in complaints %}
+
+                    <tr class="complaint-row">
+
+
+                        <td>
+
+                            <span class="complaint-id">
+                                CMP{{ complaint["id"] }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {{ complaint["citizen_name"] or "—" }}
+                        </td>
+
+
+                        <td>
+                            {{ complaint["location"] or "—" }}
+                        </td>
+
+
+                        <td class="complaint-cell">
+                            {{ complaint["complaint"] }}
+                        </td>
+
+
+                        <td>
+
+                            <span class="category-pill">
+                                {{ complaint["category"] }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if complaint["priority"] == "High" %}
+
+                                <span class="badge badge-high">
+                                    🔴 High
+                                </span>
+
+                            {% elif complaint["priority"] == "Medium" %}
+
+                                <span class="badge badge-medium">
+                                    🟠 Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-low">
+                                    🟢 Low
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if complaint["status"] == "Pending" %}
+
+                                <span class="badge badge-pending">
+                                    🟡 Pending
+                                </span>
+
+                            {% elif complaint["status"] == "In Progress" %}
+
+                                <span class="badge badge-progress">
+                                    🔵 In Progress
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-resolved">
+                                    🟢 Resolved
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ complaint["department"] or "—" }}
+                        </td>
+
+
+                        <td>
+                            {{ complaint["created_at"] }}
+                        </td>
+
+
+                        <td>
+
+                            <form
+                                action="{{ url_for(
+                                    'update_complaint_status',
+                                    complaint_id=complaint['id']
+                                ) }}"
+                                method="POST"
+                            >
+
+                                <select
+                                    name="status"
+                                    class="status-select"
+                                >
+
+                                    <option
+                                        value="Pending"
+                                        {% if complaint["status"] == "Pending" %}
+                                        selected
+                                        {% endif %}
+                                    >
+                                        Pending
+                                    </option>
+
+
+                                    <option
+                                        value="In Progress"
+                                        {% if complaint["status"] == "In Progress" %}
+                                        selected
+                                        {% endif %}
+                                    >
+                                        In Progress
+                                    </option>
+
+
+                                    <option
+                                        value="Resolved"
+                                        {% if complaint["status"] == "Resolved" %}
+                                        selected
+                                        {% endif %}
+                                    >
+                                        Resolved
+                                    </option>
+
+                                </select>
+
+
+                                <button
+                                    type="submit"
+                                    class="update-button"
+                                >
+                                    Update
+                                </button>
+
+                            </form>
+
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Pagination -->
+
+            <div class="pagination">
+
+                <button
+                    id="prevPage"
+                    class="page-button"
+                >
+                    ← Previous
+                </button>
+
+
+                <span id="pageInfo">
+                    Page 1
+                </span>
+
+
+                <button
+                    id="nextPage"
+                    class="page-button"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+
+            {% else %}
+
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🔍
+                </div>
+
+                <h3>
+                    No complaints found
+                </h3>
+
+                <p>
+                    Try changing your search or filters.
+                </p>
+
+            </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- Bottom -->
+
+        <div class="dashboard-actions">
+
+            <a
+                href="/"
+                class="dashboard-link"
+            >
+                📝 Submit New Complaint
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     Pagination JavaScript
+========================================== -->
+
+<script>
+
+    const rows =
+        Array.from(
+            document.querySelectorAll(".complaint-row")
+        );
+
+
+    const rowsPerPage = 5;
+
+    let currentPage = 1;
+
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                rows.length / rowsPerPage
+            )
+        );
+
+
+    const prevButton =
+        document.getElementById("prevPage");
+
+    const nextButton =
+        document.getElementById("nextPage");
+
+    const pageInfo =
+        document.getElementById("pageInfo");
+
+
+    function showPage(page) {
+
+        currentPage = page;
+
+
+        const start =
+            (page - 1) * rowsPerPage;
+
+
+        const end =
+            start + rowsPerPage;
+
+
+        rows.forEach(
+            (row, index) => {
+
+                if (
+                    index >= start &&
+                    index < end
+                ) {
+
+                    row.style.display = "";
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            }
+        );
+
+
+        pageInfo.textContent =
+            `Page ${currentPage} of ${totalPages}`;
+
+
+        prevButton.disabled =
+            currentPage === 1;
+
+
+        nextButton.disabled =
+            currentPage === totalPages;
+
+    }
+
+
+    if (rows.length > 0) {
+
+        showPage(1);
+
+    } else {
+
+        prevButton.style.display = "none";
+        nextButton.style.display = "none";
+        pageInfo.style.display = "none";
+
+    }
+
+
+    prevButton.addEventListener(
+        "click",
+        () => {
+
+            if (currentPage > 1) {
+
+                showPage(currentPage - 1);
+
+            }
+
+        }
+    );
+
+
+    nextButton.addEventListener(
+        "click",
+        () => {
+
+            if (currentPage < totalPages) {
+
+                showPage(currentPage + 1);
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
